@@ -6,7 +6,7 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const service = require("./reservations.service");
 const hasProperties = require("../errors/hasProperties");
 
-const VALID_PROPERTIES = [
+const REQUIRED_PROPERTIES = [
   "first_name",
   "last_name",
   "mobile_number",
@@ -16,52 +16,113 @@ const VALID_PROPERTIES = [
 ];
 
 //----Middleware----//
-function hasValidProperties(req, res, next) {
-  const { data = {} } = req.body;
+//Test if data is missing
+const hasRequiredProperties = hasProperties(...REQUIRED_PROPERTIES);
 
-  const invalidFields = Object.keys(data).filter(
-    (field) => !VALID_PROPERTIES.includes(field)
-  );
+// function validateData(request, response, next) {
+//   if (!request.body.data) {
+//     return next({ status: 400, message: "Body must include a data object" });
+//   }
+//   return next();
+// }
 
-  if (invalidFields.length) {
-    return next({
+//Validate first name
+function validateFirstName(req, res, next) {
+  const { first_name } = req.body.data;
+
+  if (!first_name || first_name === "") {
+    next({
       status: 400,
-      message: `Invalid field(s): ${invalidFields.join(", ")}`,
+      message: "first_name must not be empty or missing.",
     });
   }
   next();
 }
 
-const hasRequiredProperties = hasProperties(...VALID_PROPERTIES);
+//Validate last name
+function validateLastName(req, res, next) {
+  const { last_name } = req.body.data;
 
-function hasValidQuery(req, res, next) {
-  const { date, mobile_number } = req.query;
-  if (!date && !mobile_number) {
-    return next({
+  if (!last_name || last_name === "") {
+    next({
       status: 400,
-      message: `Either a ?date or ?mobile_number query is needed`,
+      message: "last_name must not be empty or missing.",
     });
   }
-
   next();
 }
-// function validateProperty()
 
-//Function to get all reservations
+//Validate mobile_number
+function validateMobileNumber(req, res, next) {
+  const { mobile_number } = req.body.data;
+
+  if (!mobile_number || mobile_number === "") {
+    next({
+      status: 400,
+      message: "mobile_number must not be empty or missing.",
+    });
+  }
+  next();
+}
+
+//Validate date
+function validateDate(req, res, next) {
+  const { reservation_date } = req.body.data;
+
+  if (!Date.parse(reservation_date)) {
+    next({
+      status: 400,
+      message: "reservation_date must be in YYYY-MM-DD (ISO-8601) format.",
+    });
+  }
+  next();
+}
+
+function validatePeople(req, res, next) {
+  const { data: { people } = {} } = req.body;
+  console.log(people);
+  if (!people || !Number.isInteger(people) || people < 1) {
+    next({
+      status: 400,
+      message: `Invalid people property.`,
+    });
+  }
+  next();
+}
+
+//Validate Time
+function validateTime(req, res, next) {
+  const { reservation_time } = req.body.data;
+  re = /^\d{1,2}:\d{2}([ap]m)?$/;
+
+  if (!reservation_time || !reservation_time.match(re)) {
+    next({
+      status: 400,
+      message: "reservation_time must be in HH:MM:SS (or HH:MM) format.",
+    });
+  }
+  next();
+}
+
+//----Functions----//
 async function list(req, res) {
-  res.status(200).json({ data: await service.list() });
+  res.status(200).json({ data: await service.list(req.query.date) });
 }
 
-async function create(req, res, next) {
-  const data = await service.create(req.body.data);
-  res.status(201).json({ data });
+async function create(req, res) {
+  res.status(201).json({ data: await service.create(req.body.data) });
 }
 
 module.exports = {
-  list: [hasValidQuery, asyncErrorBoundary(list)],
+  list: [asyncErrorBoundary(list)],
   create: [
-    hasValidProperties,
     hasRequiredProperties,
+    validateFirstName,
+    validateLastName,
+    validateMobileNumber,
+    validateDate,
+    validatePeople,
+    validateTime,
     asyncErrorBoundary(create),
   ],
 };
