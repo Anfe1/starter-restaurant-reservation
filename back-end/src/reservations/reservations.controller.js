@@ -85,7 +85,7 @@ function validateDate(req, res, next) {
     });
   }
 
-  if (!(reservationDate >= now)) {
+  if (reservationDate < now) {
     return next({
       status: 400,
       message: "Reservation must be in the future.",
@@ -94,7 +94,7 @@ function validateDate(req, res, next) {
 
   const dayOfWeek = new Date(reservation_date).getUTCDay();
 
-  if (!(dayOfWeek !== 2)) {
+  if (dayOfWeek === 2) {
     return next({
       status: 400,
       message: "closed on Tuesdays",
