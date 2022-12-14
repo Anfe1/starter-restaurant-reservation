@@ -118,12 +118,19 @@ function validatePeople(req, res, next) {
 //Validate Time
 function validateTime(req, res, next) {
   const { reservation_time } = req.body.data;
-  re = /^\d{1,2}:\d{2}([ap]m)?$/;
+  timeFormat = /^\d{1,2}:\d{2}([ap]m)?$/;
 
-  if (!reservation_time || !reservation_time.match(re)) {
-    next({
+  if (!reservation_time || !reservation_time.match(timeFormat)) {
+    return next({
       status: 400,
       message: "reservation_time must be in HH:MM:SS (or HH:MM) format.",
+    });
+  }
+
+  if (reservation_time < "10:30" || reservation_time > "21:30") {
+    return next({
+      status: 400,
+      message: "resevation_time is not avalible.",
     });
   }
   next();
