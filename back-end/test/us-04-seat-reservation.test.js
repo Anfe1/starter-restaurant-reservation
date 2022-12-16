@@ -188,7 +188,7 @@ describe("US-04 - Seat reservation", () => {
     });
 
     describe("PUT /tables/:table_id/seat", () => {
-      test("returns 400 if data is missing", async () => {
+      test.only("returns 400 if data is missing", async () => {
         expect(tableOne).not.toBeUndefined();
 
         const response = await request(app)
