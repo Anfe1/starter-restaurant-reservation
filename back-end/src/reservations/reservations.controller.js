@@ -19,12 +19,21 @@ const REQUIRED_PROPERTIES = [
 //Test if data is missing
 const hasRequiredProperties = hasProperties(...REQUIRED_PROPERTIES);
 
-// function validateData(request, response, next) {
-//   if (!request.body.data) {
-//     return next({ status: 400, message: "Body must include a data object" });
-//   }
-//   return next();
-// }
+//Reservation exists
+async function reservationExists(req, res, next) {
+  const { reservation_Id } = req.params;
+  console.log(reservation_Id);
+  const reservation = await service.read(reservation_Id);
+
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  next({
+    status: 404,
+    message: `Reservation not found.`,
+  });
+}
 
 //Validate first name
 function validateFirstName(req, res, next) {
@@ -63,13 +72,6 @@ function validateMobileNumber(req, res, next) {
     });
   }
   next();
-}
-
-function dateNotInPast(dateString, timeString) {
-  const now = new Date();
-  // creating a date object using a string like:  '2021-10-08T01:21:00'
-  const reservationDate = new Date(dateString + "T" + timeString);
-  return reservationDate >= now;
 }
 
 //Validate date, Sunday-Saturday: 0-6
@@ -145,6 +147,11 @@ async function create(req, res) {
   res.status(201).json({ data: await service.create(req.body.data) });
 }
 
+async function read(req, res, next) {
+  const { reservation } = res.locals;
+  res.status(200).json({ data: reservation });
+}
+
 module.exports = {
   list: [asyncErrorBoundary(list)],
   create: [
@@ -157,4 +164,5 @@ module.exports = {
     validateTime,
     asyncErrorBoundary(create),
   ],
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
 };
