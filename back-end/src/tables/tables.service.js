@@ -14,5 +14,4 @@ function list() {
 module.exports = {
   list,
   create,
-  read,
 };
