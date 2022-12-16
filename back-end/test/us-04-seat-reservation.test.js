@@ -125,7 +125,7 @@ describe("US-04 - Seat reservation", () => {
           .post("/tables")
           .set("Accept", "application/json")
           .send({ data });
-
+        // console.log(response.body);
         expect(response.body.error).toContain("capacity");
         expect(response.status).toBe(400);
       });
