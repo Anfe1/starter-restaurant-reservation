@@ -3,6 +3,8 @@ import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation, useHistory } from "react-router-dom";
 import ReservationList from "../layout/reservations/ReservationsList";
+import { previous, next } from "../utils/date-time";
+
 /**
  * Defines the dashboard page.
  * @param date
@@ -54,6 +56,20 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }, [date, currentDate, history.location]);
 
+  //Previous button handler
+  const previousHandler = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+    setCurrentDate(previous(currentDate));
+  };
+
+  //Next button handler
+  const nextHandler = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+    setCurrentDate(next(currentDate));
+  };
+
   if (reservations) {
     return (
       <main>
@@ -62,13 +78,21 @@ function Dashboard({ date }) {
           <div className="row mb-3">
             <h4 className="mb-0">Reservations for date: {currentDate}</h4>
             <div className="">
-              <button className="btn btn-primary ml-3"> Previous Day </button>
+              <button
+                className="btn btn-primary ml-3"
+                onClick={previousHandler}
+              >
+                Previous Day
+              </button>
             </div>
             <div className="">
               <button className="btn btn-primary ml-3"> Today </button>
             </div>
             <div className="">
-              <button className="btn btn-primary ml-3"> Next Day </button>
+              <button className="btn btn-primary ml-3" onClick={nextHandler}>
+                {" "}
+                Next Day{" "}
+              </button>
             </div>
           </div>
         </div>
