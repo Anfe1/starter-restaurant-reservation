@@ -21,18 +21,19 @@ const hasRequiredProperties = hasProperties(...REQUIRED_PROPERTIES);
 
 //Reservation exists
 async function reservationExists(req, res, next) {
-  const { reservation_Id } = req.params;
-  console.log(reservation_Id);
-  const reservation = await service.read(reservation_Id);
+  const { reservation_id } = req.params;
 
-  if (reservation) {
-    res.locals.reservation = reservation;
-    return next();
+  const reservation = await service.read(reservation_id);
+  console.log(reservation);
+
+  if (!reservation) {
+    return next({
+      status: 404,
+      message: `Reservation with id: ${reservation_id}not found.`,
+    });
   }
-  next({
-    status: 404,
-    message: `Reservation not found.`,
-  });
+  res.locals.reservation = reservation;
+  next();
 }
 
 //Validate first name
@@ -140,16 +141,16 @@ function validateTime(req, res, next) {
 
 //----Functions----//
 async function list(req, res) {
-  res.status(200).json({ data: await service.list(req.query.date) });
+  res.status(200).json({ data: await service.listDate(req.query.date) });
 }
 
 async function create(req, res) {
   res.status(201).json({ data: await service.create(req.body.data) });
 }
 
-async function read(req, res, next) {
+function read(req, res, next) {
   const { reservation } = res.locals;
-  res.status(200).json({ data: reservation });
+  res.json({ reservation });
 }
 
 module.exports = {
@@ -164,5 +165,5 @@ module.exports = {
     validateTime,
     asyncErrorBoundary(create),
   ],
-  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
+  read: [asyncErrorBoundary(reservationExists), read],
 };
