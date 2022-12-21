@@ -18,6 +18,7 @@ function Dashboard({ date }) {
 
   const history = useHistory();
   const location = useLocation();
+  const searchDate = location.search.slice(-10);
 
   useEffect(loadDashboard, [date]);
 
@@ -56,6 +57,12 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }, [date, currentDate, history.location]);
 
+  useEffect(() => {
+    if (searchDate && searchDate !== "") {
+      setCurrentDate(searchDate);
+    }
+  }, [searchDate, history]);
+
   //Previous button handler
   const previousHandler = (event) => {
     event.preventDefault();
@@ -68,6 +75,13 @@ function Dashboard({ date }) {
     event.preventDefault();
     history.push("/dashboard");
     setCurrentDate(next(currentDate));
+  };
+
+  //today button handler
+  const todayHandler = (event) => {
+    event.preventDefault();
+    history.push("/dashboard");
+    setCurrentDate(date);
   };
 
   if (reservations) {
@@ -86,7 +100,10 @@ function Dashboard({ date }) {
               </button>
             </div>
             <div className="">
-              <button className="btn btn-primary ml-3"> Today </button>
+              <button className="btn btn-primary ml-3" onClick={todayHandler}>
+                {" "}
+                Today{" "}
+              </button>
             </div>
             <div className="">
               <button className="btn btn-primary ml-3" onClick={nextHandler}>
