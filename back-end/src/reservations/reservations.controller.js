@@ -65,22 +65,47 @@ function validateMobileNumber(req, res, next) {
   next();
 }
 
-//Validate date
+function dateNotInPast(dateString, timeString) {
+  const now = new Date();
+  // creating a date object using a string like:  '2021-10-08T01:21:00'
+  const reservationDate = new Date(dateString + "T" + timeString);
+  return reservationDate >= now;
+}
+
+//Validate date, Sunday-Saturday: 0-6
 function validateDate(req, res, next) {
-  const { reservation_date } = req.body.data;
+  const { reservation_date, reservation_time } = req.body.data;
+  const now = new Date();
+  const reservationDate = new Date(reservation_date + "T" + reservation_time);
 
   if (!Date.parse(reservation_date)) {
-    next({
+    return next({
       status: 400,
       message: "reservation_date must be in YYYY-MM-DD (ISO-8601) format.",
     });
   }
+
+  if (reservationDate < now) {
+    return next({
+      status: 400,
+      message: "Reservation must be in the future.",
+    });
+  }
+
+  const dayOfWeek = new Date(reservation_date).getUTCDay();
+
+  if (dayOfWeek === 2) {
+    return next({
+      status: 400,
+      message: "closed on Tuesdays",
+    });
+  }
+
   next();
 }
 
 function validatePeople(req, res, next) {
   const { data: { people } = {} } = req.body;
-  console.log(people);
   if (!people || !Number.isInteger(people) || people < 1) {
     next({
       status: 400,
