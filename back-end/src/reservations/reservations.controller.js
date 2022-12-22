@@ -133,7 +133,7 @@ function validateTime(req, res, next) {
   if (reservation_time < "10:30" || reservation_time > "21:30") {
     return next({
       status: 400,
-      message: "resevation_time is not avalible.",
+      message: "reservation_time is not avalible.",
     });
   }
   next();
