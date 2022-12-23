@@ -8,16 +8,13 @@ function hasRequiredProperties(property) {
   return function (res, req, next) {
     const { data = {} } = res.body;
 
-    try {
-      if (!data[property]) {
-        const error = new Error(`A '${property}' property is required`);
-        error.status = 400;
-        throw error;
-      }
-      next();
-    } catch (error) {
-      next(error);
+    if (!data[property]) {
+      return next({
+        status: 400,
+        message: `Property ${property} is missing.`,
+      });
     }
+    next();
   };
 }
 
@@ -43,7 +40,7 @@ function validateTableName(req, res, next) {
 function validateCapacity(req, res, next) {
   const { capacity } = req.body.data;
 
-  if (!Number(capacity)) {
+  if (typeof capacity !== "number") {
     return next({
       status: 400,
       message: "capacity must be a number.",
