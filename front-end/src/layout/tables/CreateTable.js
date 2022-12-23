@@ -4,11 +4,29 @@ import { createTable } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
 function CreateTable() {
+  const history = useHistory();
   const [table, setTable] = useState({
     table_name: "",
     capacity: "",
   });
+
   const [error, setError] = useState(null);
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    createTable(table)
+      .then(() => {
+        history.push(`/dashboard`);
+      })
+      .catch(setError);
+  };
+
+  const changeHandler = ({ target }) => {
+    setTable({
+      ...table,
+      [target.name]: target.value,
+    });
+  };
 
   return (
     <main>
@@ -27,6 +45,7 @@ function CreateTable() {
               id="table_name"
               required={true}
               type="text"
+              onChange={changeHandler}
               value={table.table_name}
             />
             <small className="form-text text-muted"> Enter Table Name</small>
@@ -40,8 +59,9 @@ function CreateTable() {
               className="form-control"
               name="capacity"
               id="capacity"
+              type="number"
               required={true}
-              type="text"
+              onChange={changeHandler}
               value={table.capacity}
             />
             <small className="form-text text-muted">
@@ -50,10 +70,18 @@ function CreateTable() {
             </small>
           </div>
         </div>
-        <button type="button" className="btn btn-secondary mr-3">
+        <button
+          type="button"
+          className="btn btn-secondary mr-3"
+          onClick={() => history.goBack()}
+        >
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="btn btn-primary"
+          onClick={submitHandler}
+        >
           Submit
         </button>
       </form>
