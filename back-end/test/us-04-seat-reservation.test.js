@@ -125,7 +125,6 @@ describe("US-04 - Seat reservation", () => {
           .post("/tables")
           .set("Accept", "application/json")
           .send({ data });
-        // console.log(response.body);
         expect(response.body.error).toContain("capacity");
         expect(response.status).toBe(400);
       });
@@ -188,7 +187,7 @@ describe("US-04 - Seat reservation", () => {
     });
 
     describe("PUT /tables/:table_id/seat", () => {
-      test.only("returns 400 if data is missing", async () => {
+      test("returns 400 if data is missing", async () => {
         expect(tableOne).not.toBeUndefined();
 
         const response = await request(app)
