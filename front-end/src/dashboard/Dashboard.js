@@ -15,6 +15,7 @@ function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [currentDate, setCurrentDate] = useState(date);
+  const [tables, setTables] = useState([]);
 
   const history = useHistory();
   const location = useLocation();
@@ -84,6 +85,17 @@ function Dashboard({ date }) {
     setCurrentDate(date);
   };
 
+  //Clear the tables
+  function clearTables(tables) {
+    let result = [];
+    tables.forEach((table) => {
+      if (table.reservation_id) {
+        result.push(table);
+      }
+    });
+    return result;
+  }
+
   if (reservations) {
     return (
       <main>
@@ -141,6 +153,26 @@ function Dashboard({ date }) {
                 />
               ))}
             </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h4>Tables List</h4>
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col"> ID</th>
+                <th scope="col"> Table Name</th>
+                <th scope="col"> Capacity</th>
+                <th scope="col"> Reservation ID</th>
+                <th scope="col"> Table Status</th>
+                {clearTables(tables).length ? (
+                  <th scope="col"> Clear Tables</th>
+                ) : (
+                  <></>
+                )}
+              </tr>
+            </thead>
           </table>
         </div>
       </main>
