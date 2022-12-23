@@ -24,7 +24,6 @@ async function reservationExists(req, res, next) {
   const { reservation_id } = req.params;
 
   const reservation = await service.read(reservation_id);
-  console.log(reservation);
 
   if (!reservation) {
     return next({
