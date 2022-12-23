@@ -1,6 +1,6 @@
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const service = require("./tables.service");
-const hasProperties = require("../errors/hasProperties");
+// const hasProperties = require("../errors/hasProperties");
 
 //----Middleware----//
 
@@ -43,7 +43,7 @@ function validateTableName(req, res, next) {
 function validateCapacity(req, res, next) {
   const { capacity } = req.body.data;
 
-  if (typeof capacity !== "number") {
+  if (!Number(capacity)) {
     return next({
       status: 400,
       message: "capacity must be a number.",
