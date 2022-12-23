@@ -4,6 +4,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation, useHistory } from "react-router-dom";
 import ReservationList from "../layout/reservations/ReservationsList";
 import { previous, next } from "../utils/date-time";
+import ListTables from "../layout/tables/ListTables";
 
 /**
  * Defines the dashboard page.
@@ -173,6 +174,11 @@ function Dashboard({ date }) {
                 )}
               </tr>
             </thead>
+            <tbody>
+              {tables.map((table) => (
+                <ListTables table={table} key={table.table_id} />
+              ))}
+            </tbody>
           </table>
         </div>
       </main>
