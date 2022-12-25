@@ -23,7 +23,7 @@ const hasRequiredProperties = hasProperties(...REQUIRED_PROPERTIES);
 async function reservationExists(req, res, next) {
   const { reservation_id } = req.params;
 
-  const reservation = await service.read(reservation_id);
+  const reservation = await service.readReservationId(reservation_id);
 
   if (!reservation) {
     return next({
@@ -148,8 +148,8 @@ async function create(req, res) {
 }
 
 function read(req, res, next) {
-  const { reservation } = res.locals;
-  res.json({ reservation });
+  const data = res.locals.reservation;
+  res.json({ data });
 }
 
 module.exports = {
