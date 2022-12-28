@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation, useHistory } from "react-router-dom";
 import ReservationList from "../layout/reservations/ReservationsList";
@@ -96,6 +96,21 @@ function Dashboard({ date }) {
     });
     return result;
   }
+
+  useEffect(() => {
+    const abortController = new AbortController();
+
+    async function loadTables() {
+      try {
+        const response = await listTables();
+        setTables(response);
+      } catch (error) {
+        setReservationsError(error);
+      }
+    }
+    loadTables();
+    return () => abortController.abort();
+  }, [history, date, currentDate]);
 
   if (reservations) {
     return (
