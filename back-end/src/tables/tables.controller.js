@@ -53,7 +53,7 @@ function validateCapacity(req, res, next) {
   const { capacity } = req.body.data;
   console.log(typeof capacity);
 
-  if (!Number(capacity)) {
+  if (typeof capacity != "number") {
     return next({
       status: 400,
       message: "capacity must be a number test.",
