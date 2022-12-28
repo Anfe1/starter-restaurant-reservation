@@ -41,6 +41,7 @@ function Routes() {
       <Route exact path="/reservations/new">
         <ReservationNew date={date} />
       </Route>
+      <Route exact path="/reservations/:reservation_id/seat"></Route>
       <Route path="/tables/new">
         <CreateTable />
       </Route>
