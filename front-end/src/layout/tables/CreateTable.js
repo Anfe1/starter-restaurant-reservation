@@ -32,27 +32,25 @@ function CreateTable() {
     <main>
       <h1> Create Table</h1>
       <ErrorAlert error={error} />
-      <form className="form-group">
+      <form onSubmit={submitHandler} className="form-group">
         <div className="row mb-3">
           <div className="col-4 form-group">
             <label className="form-label" htmlFor="table_name">
-              {" "}
               Table Name
             </label>
             <input
               className="form-control"
               name="table_name"
               id="table_name"
-              required={true}
               type="text"
               onChange={changeHandler}
               value={table.table_name}
+              required={true}
             />
             <small className="form-text text-muted"> Enter Table Name</small>
           </div>
           <div className="col-4 form-group">
             <label className="form-label" htmlFor="capacity">
-              {" "}
               Table Capacity
             </label>
             <input
@@ -64,10 +62,7 @@ function CreateTable() {
               onChange={changeHandler}
               value={table.capacity}
             />
-            <small className="form-text text-muted">
-              {" "}
-              Enter Table Capacity{" "}
-            </small>
+            <small className="form-text text-muted">Enter Table Capacity</small>
           </div>
         </div>
         <button
