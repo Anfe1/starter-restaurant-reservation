@@ -28,7 +28,7 @@ async function reservationExists(req, res, next) {
   if (!reservation) {
     return next({
       status: 404,
-      message: `Reservation with id: ${reservation_id}not found.`,
+      message: `Reservation with id: ${reservation_id} not found.`,
     });
   }
   res.locals.reservation = reservation;
@@ -138,6 +138,42 @@ function validateTime(req, res, next) {
   next();
 }
 
+function validateStatus(req, res, next) {
+  const { status } = req.body.data;
+  if (status === "seated" || status === "finished") {
+    return next({
+      status: 400,
+      message: "Status cannot be already seated or finished.",
+    });
+  }
+  next();
+}
+
+function statusUnknown(req, res, next) {
+  const { status } = req.body.data;
+
+  if (status === "unknown") {
+    return next({
+      status: 400,
+      message: "Status is unknown.",
+    });
+  }
+  res.locals.status = status;
+  next();
+}
+
+function finishedReservation(req, res, next) {
+  const reservation = res.locals.reservation;
+
+  if (reservation.status === "finished") {
+    return next({
+      status: 400,
+      message: "Status is currently finished.",
+    });
+  }
+  next();
+}
+
 //----Functions----//
 async function list(req, res) {
   res.status(200).json({ data: await service.listDate(req.query.date) });
@@ -152,6 +188,17 @@ function read(req, res, next) {
   res.json({ data });
 }
 
+async function update(req, res, next) {
+  const status = res.locals.status;
+  const reservation = res.locals.reservation;
+
+  const data = await service.updateReservationStatus(
+    reservation.reservation_id,
+    status
+  );
+  res.status(200).json({ data: { status: data[0].status } });
+}
+
 module.exports = {
   list: [asyncErrorBoundary(list)],
   create: [
@@ -162,7 +209,14 @@ module.exports = {
     validateDate,
     validatePeople,
     validateTime,
+    validateStatus,
     asyncErrorBoundary(create),
   ],
   read: [asyncErrorBoundary(reservationExists), read],
+  update: [
+    reservationExists,
+    statusUnknown,
+    finishedReservation,
+    asyncErrorBoundary(update),
+  ],
 };
