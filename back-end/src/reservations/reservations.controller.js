@@ -5,6 +5,7 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 // const nextId = require("../utils/nextId");
 const service = require("./reservations.service");
 const hasProperties = require("../errors/hasProperties");
+const { request } = require("../app");
 
 const REQUIRED_PROPERTIES = [
   "first_name",
@@ -18,6 +19,24 @@ const REQUIRED_PROPERTIES = [
 //----Middleware----//
 //Test if data is missing
 const hasRequiredProperties = hasProperties(...REQUIRED_PROPERTIES);
+
+//Checkss for valid fields
+function hasValidFields(req, res, next) {
+  const { data = {} } = req.body;
+
+  const invalidFields = Object.keys(data).filter(
+    (field) => !validFields.includes(field)
+  );
+
+  if (invalidFields.length) {
+    return next({
+      status: 400,
+      message: `Invalid field(s): ${invalidFields.join(", ")}`,
+    });
+  }
+
+  next();
+}
 
 //Reservation exists
 async function reservationExists(req, res, next) {
@@ -176,7 +195,13 @@ function finishedReservation(req, res, next) {
 
 //----Functions----//
 async function list(req, res) {
-  res.status(200).json({ data: await service.listDate(req.query.date) });
+  const { date, mobile_number } = req.query;
+
+  const reservation = await (mobile_number
+    ? service.searchByPhoneNumber(mobile_number)
+    : service.listDate(date));
+
+  res.status(200).json({ data: reservation });
 }
 
 async function create(req, res) {
@@ -199,6 +224,13 @@ async function update(req, res, next) {
   res.status(200).json({ data: { status: data[0].status } });
 }
 
+async function updateStatus(req, res, next) {
+  const reservation = req.body.data;
+  const newRes = await service.updateReservation(reservation);
+  const result = newRes[0];
+  res.status(200).json({ data: result });
+}
+
 module.exports = {
   list: [asyncErrorBoundary(list)],
   create: [
@@ -218,5 +250,15 @@ module.exports = {
     statusUnknown,
     finishedReservation,
     asyncErrorBoundary(update),
+  ],
+  updateReserv: [
+    reservationExists,
+    validateFirstName,
+    validateLastName,
+    validateMobileNumber,
+    validateDate,
+    validateTime,
+    validatePeople,
+    asyncErrorBoundary(updateStatus),
   ],
 };
