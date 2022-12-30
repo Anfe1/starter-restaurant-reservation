@@ -7,6 +7,7 @@ function ReservationSeating() {
   const { reservation_id } = useParams();
   const [tables, setTables] = useState([]);
   const [tableFormData, setTableFormData] = useState({});
+
   const [error, setError] = useState(null);
   const history = useHistory();
 
@@ -22,8 +23,9 @@ function ReservationSeating() {
   //submit button
   const submitHandler = (event) => {
     event.preventDefault();
-    const tableObject = JSON.parse(tableFormData);
-    updateSeating(tableObject.table_id, reservation_id)
+    const tableObj = JSON.parse(tableFormData);
+    console.log(tableObj);
+    updateSeating(tableObj.table_id, reservation_id)
       .then((response) => {
         const newTables = tables.map((table) => {
           return table.table_id === response.table_id ? response : table;
@@ -31,6 +33,7 @@ function ReservationSeating() {
         setTables(newTables);
         history.push("/dashboard");
       })
+
       .catch(setError);
   };
 
