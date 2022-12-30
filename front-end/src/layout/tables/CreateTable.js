@@ -28,6 +28,10 @@ function CreateTable() {
     });
   };
 
+  const changeHandlerNumber = ({ target: { name, value } }) => {
+    setTable((prevState) => ({ ...prevState, [name]: Number(value) }));
+  };
+
   return (
     <main>
       <h1> Create Table</h1>
@@ -59,7 +63,7 @@ function CreateTable() {
               id="capacity"
               type="number"
               required={true}
-              onChange={changeHandler}
+              onChange={changeHandlerNumber}
               value={table.capacity}
             />
             <small className="form-text text-muted">Enter Table Capacity</small>
