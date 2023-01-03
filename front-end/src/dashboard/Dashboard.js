@@ -5,7 +5,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import ReservationList from "../layout/reservations/ReservationsList";
 import { previous, next } from "../utils/date-time";
 import TablesList from "../layout/tables/TablesList";
-
+import useQuery from "../utils/useQuery";
 /**
  * Defines the dashboard page.
  * @param date
@@ -13,11 +13,13 @@ import TablesList from "../layout/tables/TablesList";
  * @returns {JSX.Element}
  */
 function Dashboard({ date }) {
+  const query = useQuery();
+  const queryDate = query.get("date");
+  const today = new Date().toJSON().slice(0, 10);
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const [currentDate, setCurrentDate] = useState(date);
+  const [currentDate, setCurrentDate] = useState(queryDate ? queryDate : today);
   const [tables, setTables] = useState([]);
-
   const history = useHistory();
   const location = useLocation();
   const searchDate = location.search.slice(-10);
@@ -72,22 +74,22 @@ function Dashboard({ date }) {
   //Previous button handler
   const previousHandler = (event) => {
     event.preventDefault();
-    history.push("/dashboard");
+    history.push(`/dashboard?date=${previous(currentDate)}`);
     setCurrentDate(previous(currentDate));
   };
 
   //Next button handler
   const nextHandler = (event) => {
     event.preventDefault();
-    history.push("/dashboard");
+    history.push(`/dashboard?date=${next(currentDate)}`);
     setCurrentDate(next(currentDate));
   };
 
   //today button handler
   const todayHandler = (event) => {
     event.preventDefault();
-    history.push("/dashboard");
-    setCurrentDate(date);
+    setCurrentDate(today);
+    history.push(`/dashboard?date=${today}`);
   };
 
   //Clear the tables
