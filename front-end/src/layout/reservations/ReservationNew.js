@@ -53,7 +53,7 @@ function ReservationNew({ date }) {
               name="first_name"
               type="text"
               onChange={changeHandler}
-              require={true}
+              required={true}
               value={reservation.first_name}
             />
             <small className="form-text text-muted"> Enter First Name</small>
@@ -68,7 +68,7 @@ function ReservationNew({ date }) {
               name="last_name"
               type="text"
               onChange={changeHandler}
-              require={true}
+              required={true}
               value={reservation.last_name}
             />
             <small className="form-text text-muted"> Enter Last Name</small>
@@ -85,7 +85,7 @@ function ReservationNew({ date }) {
               name="mobile_number"
               type="text"
               onChange={changeHandler}
-              require={true}
+              required={true}
               placeholder="(xxx) xxx-xxx"
               value={reservation.mobile_number}
             />
@@ -101,7 +101,7 @@ function ReservationNew({ date }) {
               name="people"
               type="number"
               onChange={changeHandler}
-              require={true}
+              required={true}
               value={reservation.people}
             />
             <small className="form-text text-muted"> Enter Party Size</small>
@@ -132,7 +132,7 @@ function ReservationNew({ date }) {
               name="reservation_time"
               type="time"
               onChange={changeHandler}
-              require={true}
+              required={true}
               value={reservation.reservation_time}
             />
             <small className="form-text text-muted">
