@@ -19,11 +19,11 @@ function readReservationId(reservation_id) {
   return knex("reservations").select("*").where({ reservation_id }).first();
 }
 
-function updateReservationStatus(reservation_id, status) {
-  return knex("reservations")
-    .where({ reservation_id })
-    .update({ status: status }, "*");
-}
+// function updateReservationStatus(reservation_id, status) {
+//   return knex("reservations")
+//     .where({ reservation_id })
+//     .update({ status: status }, "*");
+// }
 
 function searchByPhoneNumber(mobile_number) {
   return knex("reservations")
@@ -34,49 +34,27 @@ function searchByPhoneNumber(mobile_number) {
     .orderBy("reservation_date");
 }
 
-function updateReservationById(updatedReservation) {
+// function updateReservationById(updatedReservation) {
+//   return knex("reservations")
+//     .where({ reservation_id: updatedReservation.reservation_id })
+//     .whereNot({ status: "finished" })
+//     .update(updatedReservation, "*")
+//     .then((updatedRecord) => updatedRecord[0]);
+// }
+
+async function updateReservation(updatedReservation) {
   return knex("reservations")
     .where({ reservation_id: updatedReservation.reservation_id })
     .whereNot({ status: "finished" })
     .update(updatedReservation, "*")
-    .then((updatedRecord) => updatedRecord[0]);
-}
-
-async function updateReservation(reservation) {
-  const {
-    reservation_id,
-    first_name,
-    last_name,
-    mobile_number,
-    reservation_date,
-    reservation_time,
-    people,
-  } = reservation;
-  return knex("reservations").where({ reservation_id }).update(
-    {
-      first_name: first_name,
-      last_name: last_name,
-      mobile_number: mobile_number,
-      reservation_date: reservation_date,
-      reservation_time: reservation_time,
-      people: people,
-    },
-    [
-      "first_name",
-      "last_name",
-      "mobile_number",
-      "people",
-      "reservation_date",
-      "reservation_time",
-    ]
-  );
+    .then((updatedRecords) => updatedRecords[0]);
 }
 module.exports = {
   listDate,
   create,
   readReservationId,
-  updateReservationStatus,
+  // updateReservationStatus,
   searchByPhoneNumber,
-  updateReservationById,
+  // updateReservationById,
   updateReservation,
 };
