@@ -24,7 +24,7 @@ function ReservationSeating() {
   const submitHandler = (event) => {
     event.preventDefault();
     const tableObj = JSON.parse(tableFormData);
-    console.log(tableObj);
+
     updateSeating(tableObj.table_id, reservation_id)
       .then((response) => {
         const newTables = tables.map((table) => {
@@ -65,7 +65,7 @@ function ReservationSeating() {
                 <option
                   key={table.table_id}
                   value={JSON.stringify(table)}
-                  require={true}
+                  required={true}
                 >
                   {table.table_name} - {table.capacity}
                 </option>
