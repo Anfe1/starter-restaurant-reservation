@@ -12,7 +12,6 @@ function ReservationForm({ reservation, setReservation, submitHandler }) {
     }));
   }
 
-  // for people
   function changeHandlerNum({ target: { name, value } }) {
     setReservation((prevState) => ({
       ...prevState,
@@ -20,11 +19,8 @@ function ReservationForm({ reservation, setReservation, submitHandler }) {
     }));
   }
 
-  // const [error, setError] = useState(null);
-
   return (
     <form onSubmit={submitHandler}>
-      {/* <ErrorAlert error={error} /> */}
       <div className="form-group row">
         <label className="col-sm-2 col-form-label">First name:</label>
         <div className="col-sm-10">
