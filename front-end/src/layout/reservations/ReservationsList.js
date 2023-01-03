@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import ErrorAlert from "../ErrorAlert";
-import { listTables, updateReservationStatus } from "../../utils/api";
+import { listTables, cancelReservation } from "../../utils/api";
 
 function ReservationsList({ reservationParam }) {
-  const [reservation, setReservation] = useState(reservationParam);
   const [error, setError] = useState(null);
   const history = useHistory();
   const {
@@ -18,29 +17,23 @@ function ReservationsList({ reservationParam }) {
     status,
   } = reservationParam;
 
-  const cancelHandler = (event) => {
-    event.preventDefault();
-    setError(null);
-    if (
-      window.confirm(
-        "Do you want to cancel this reservation? This cannot be undone."
-      )
-    ) {
-      updateReservationStatus(
-        { status: "cancelled" },
-        reservation.reservation_id
-      )
-        .then(() => {
-          listTables();
-          history.go(0);
-        })
-        .catch(setError);
+  const cancelHandler = () => {
+    const confirmBox = window.confirm(
+      "Do you want to cancel this reservation? This cannot be undone."
+    );
+
+    if (confirmBox === true) {
+      cancelReservation(reservationParam, reservation_id)
+        .then(() => history.go())
+        .catch((error) => console.log("error", error));
     }
+
+    return null;
   };
 
-  useEffect(() => {
-    setReservation(reservation);
-  }, [reservation, history]);
+  // useEffect(() => {
+  //   setReservation(reservation);
+  // }, [reservation, history]);
 
   return (
     <>
@@ -55,7 +48,7 @@ function ReservationsList({ reservationParam }) {
         <td> {reservation_time} </td>
         <td data-reservation-id-status={reservation_id}>{status}</td>
         <td>
-          {reservation.status === "booked" ? (
+          {status === "booked" ? (
             <a href={`/reservations/${reservation_id}/seat`}>
               <button className="btn btn-primary"> Seat </button>
             </a>
