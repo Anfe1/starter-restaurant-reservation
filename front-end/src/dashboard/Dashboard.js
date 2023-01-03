@@ -4,7 +4,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import { useLocation, useHistory } from "react-router-dom";
 import ReservationList from "../layout/reservations/ReservationsList";
 import { previous, next } from "../utils/date-time";
-import ListTables from "../layout/tables/ListTables";
+import TablesList from "../layout/tables/TablesList";
 
 /**
  * Defines the dashboard page.
@@ -29,6 +29,10 @@ function Dashboard({ date }) {
     setReservationsError(null);
     listReservations({ date }, abortController.signal)
       .then(setReservations)
+      .catch(setReservationsError);
+
+    listTables(abortController.signal)
+      .then(setTables)
       .catch(setReservationsError);
     return () => abortController.abort();
   }
@@ -162,12 +166,14 @@ function Dashboard({ date }) {
               </tr>
             </thead>
             <tbody>
-              {reservations.map((reservation) => (
-                <ReservationList
-                  reservationParam={reservation}
-                  key={reservation.reservation_id}
-                />
-              ))}
+              {reservations.map((reservation) =>
+                reservation.status === "cancelled" ? null : (
+                  <ReservationList
+                    reservationParam={reservation}
+                    key={reservation.reservation_id}
+                  />
+                )
+              )}
             </tbody>
           </table>
         </div>
@@ -191,7 +197,11 @@ function Dashboard({ date }) {
             </thead>
             <tbody>
               {tables.map((table) => (
-                <ListTables table={table} key={table.table_id} />
+                <TablesList
+                  table={table}
+                  key={table.table_id}
+                  loadDashboard={loadDashboard}
+                />
               ))}
             </tbody>
           </table>
