@@ -49,6 +49,17 @@ async function updateTableReservationIdStatus(reservation_id, table_id) {
 }
 
 function destroyTable(table_id, reservation_id) {
+  // const trx = await knex.transaction();
+  // return trx("tables")
+  //   .where({ table_id: table_id })
+  //   .update({ reservation_id: null }, "*")
+  //   .then(() => {
+  //     return trx("reservations")
+  //       .where({ reservation_id })
+  //       .update({ status: "finished" });
+  //   });
+  // .then(trx.commit)
+  // .catch(trx.rollback);
   return knex.transaction(function (trx) {
     return trx("tables")
       .where({ table_id: table_id })
