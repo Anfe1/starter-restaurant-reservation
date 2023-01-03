@@ -174,6 +174,8 @@ async function deleteTable(req, res, next) {
   const { table } = res.locals;
 
   const data = await service.destroyTable(table.table_id, table.reservation_id);
+  // const data = await service.list();
+  console.log(data);
   res.json({ data });
 }
 
