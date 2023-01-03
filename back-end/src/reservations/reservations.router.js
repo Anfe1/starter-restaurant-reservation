@@ -15,14 +15,15 @@ router
   .all(methodNotAllowed);
 
 router
-  .route("/:reservation_id")
+  .route("/:reservation_id/status")
   .get(controller.read)
-  .put(controller.updateReserv)
+  .put(controller.updateStatus)
   .all(methodNotAllowed);
 
 router
-  .route("/:reservation_id/status")
-  .put(controller.update)
+  .route("/:reservation_id")
+  .get(controller.read)
+  .put(controller.updateReserv)
   .all(methodNotAllowed);
 
 module.exports = router;
