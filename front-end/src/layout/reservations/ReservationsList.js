@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import ErrorAlert from "../ErrorAlert";
-import { listTables, cancelReservation } from "../../utils/api";
+
+import { cancelReservation } from "../../utils/api";
 
 function ReservationsList({ reservationParam }) {
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const history = useHistory();
   const {
     reservation_id,
@@ -31,13 +31,8 @@ function ReservationsList({ reservationParam }) {
     return null;
   };
 
-  // useEffect(() => {
-  //   setReservation(reservation);
-  // }, [reservation, history]);
-
   return (
     <>
-      <ErrorAlert error={error} />
       <tr>
         <th scope="row"> {reservation_id}</th>
         <td>{first_name}</td>
