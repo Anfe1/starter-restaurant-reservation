@@ -1,5 +1,6 @@
 const knex = require("../db/connection");
 
+//Create a new entry
 function create(newTable) {
   return knex("tables")
     .insert(newTable)
