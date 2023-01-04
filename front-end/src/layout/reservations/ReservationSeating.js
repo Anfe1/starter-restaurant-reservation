@@ -3,97 +3,87 @@ import { useHistory, useParams } from "react-router";
 import { listTables, updateSeating } from "../../utils/api";
 import ErrorAlert from "../ErrorAlert";
 
-function ReservationSeating() {
+function ReservationSeating({ date }) {
   const { reservation_id } = useParams();
   const [tables, setTables] = useState([]);
-  const [tableFormData, setTableFormData] = useState({});
+  const [tableId, setTableId] = useState("");
 
   const [error, setError] = useState(null);
   const history = useHistory();
 
+  useEffect(loadTables, [reservation_id]);
+
   //Load tables
-  useEffect(() => {
+  function loadTables() {
     const abortController = new AbortController();
+
     setError(null);
-    listTables().then(setTables).catch(setError);
+    listTables(abortController.signal).then(setTables).catch(setError);
 
     return () => abortController.abort();
-  }, []);
+  }
+
+  const rows = tables.map((table) => {
+    return (
+      <option key={table.table_id} value={table.table_id}>
+        {table.table_name} - {table.capacity}
+      </option>
+    );
+  });
 
   //submit button
   const submitHandler = (event) => {
     event.preventDefault();
-    const tableObj = JSON.parse(tableFormData);
 
-    updateSeating(tableObj.table_id, reservation_id)
-      .then((response) => {
-        const newTables = tables.map((table) => {
-          return table.table_id === response.table_id ? response : table;
-        });
-        setTables(newTables);
-        history.push("/dashboard");
-      })
-
+    const abortController = new AbortController();
+    setError(null);
+    updateSeating(tableId, reservation_id, abortController.signal)
+      .then(() => history.push(`/dashboard?date=${date}`))
       .catch(setError);
+    return () => abortController.abort();
   };
 
-  if (tables) {
-    return (
-      <>
-        <div className="mb-3">
-          <h1> Seat the Current Reservation </h1>
-        </div>
-        <ErrorAlert error={error} />
-        <div className="mb-3">
-          <h3> Current Reservation: {reservation_id}</h3>
-        </div>
+  const changeHandler = ({ target }) => {
+    setTableId(Number(target.value));
+  };
 
-        <form className="form-group" onSubmit={submitHandler}>
-          <div className="col mb-3">
-            <label className="col mb-3" htmlFor="table_id">
-              {" "}
-              Select Table
-            </label>
+  return (
+    <div>
+      <div>Seat A Table</div>
+      <ErrorAlert error={error} />
+
+      <form onSubmit={submitHandler}>
+        <div className="form-row align-items-center">
+          <div className="col-auto my-1">
             <select
-              className="form-control"
+              className="custom-select mr-sm-2"
               name="table_id"
-              id="table_id"
-              onChange={(event) => setTableFormData(event.target.value)}
+              required
+              onChange={changeHandler}
             >
-              <option value="">Table Name - Capacity </option>
-              {tables.map((table) => (
-                <option
-                  key={table.table_id}
-                  value={JSON.stringify(table)}
-                  required={true}
-                >
-                  {table.table_name} - {table.capacity}
-                </option>
-              ))}
+              <option defaultValue={0}>Choose...</option>
+              {rows}
             </select>
           </div>
-          <button
-            type="button"
-            onClick={() => history.goBack()}
-            className="btn btn-secondary mr-2"
-          >
-            {" "}
-            Cancel
-          </button>
-          <button className="btn btn-primary" type="submit">
-            {" "}
-            Update
-          </button>
-        </form>
-      </>
-    );
-  } else {
-    return (
-      <div>
-        <h1>No open tables to seat</h1>
-      </div>
-    );
-  }
+
+          <div className="col-auto my-1">
+            <button type="submit" className="btn btn-primary">
+              Seat
+            </button>
+          </div>
+          <div>
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={history.goBack}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default ReservationSeating;
