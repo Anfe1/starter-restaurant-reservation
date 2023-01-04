@@ -40,32 +40,6 @@ function Dashboard({ date }) {
   }
 
   useEffect(() => {
-    const abortController = new AbortController();
-
-    async function loadReservations() {
-      try {
-        if (currentDate === date) {
-          const response = await listReservations(
-            { date },
-            abortController.signal
-          );
-          setReservations(response);
-        } else {
-          const response = await listReservations(
-            { currentDate },
-            abortController.signal
-          );
-          setReservations(response);
-        }
-      } catch (error) {
-        setReservationsError(error);
-      }
-    }
-    loadReservations();
-    return () => abortController.abort();
-  }, [date, currentDate, history.location]);
-
-  useEffect(() => {
     if (searchDate && searchDate !== "") {
       setCurrentDate(searchDate);
     }
@@ -188,7 +162,6 @@ function Dashboard({ date }) {
                 <th scope="col"> ID</th>
                 <th scope="col"> Table Name</th>
                 <th scope="col"> Capacity</th>
-                <th scope="col"> Reservation ID</th>
                 <th scope="col"> Table Status</th>
                 {clearTables(tables).length ? (
                   <th scope="col"> Clear Tables</th>
