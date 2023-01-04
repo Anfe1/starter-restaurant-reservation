@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 
 import { cancelReservation } from "../../utils/api";
 
 function ReservationsList({ reservationParam }) {
-  // const [error, setError] = useState(null);
   const history = useHistory();
   const {
     reservation_id,
