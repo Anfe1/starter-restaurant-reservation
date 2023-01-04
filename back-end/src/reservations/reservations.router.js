@@ -15,12 +15,6 @@ router
   .all(methodNotAllowed);
 
 router
-  .route("/")
-  .get(controller.list)
-  .post(controller.create)
-  .all(methodNotAllowed);
-
-router
   .route("/:reservation_id/status")
   .get(controller.read)
   .put(controller.updateStatus)
@@ -30,6 +24,12 @@ router
   .route("/:reservation_id")
   .get(controller.read)
   .put(controller.updateReserv)
+  .all(methodNotAllowed);
+
+router
+  .route("/")
+  .get(controller.list)
+  .post(controller.create)
   .all(methodNotAllowed);
 
 module.exports = router;
