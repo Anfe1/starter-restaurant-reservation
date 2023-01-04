@@ -38,7 +38,7 @@ function ReservationSeating({ date }) {
     const abortController = new AbortController();
     setError(null);
     updateSeating(tableId, reservation_id, abortController.signal)
-      .then(() => history.push(`/dashboard?date=${date}`))
+      .then(() => history.push("/dashboard"))
       .catch(setError);
     return () => abortController.abort();
   };
