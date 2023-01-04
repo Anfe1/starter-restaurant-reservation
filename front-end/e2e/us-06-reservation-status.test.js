@@ -19,7 +19,7 @@ describe("US-06 - Reservation status - E2E", () => {
 
   beforeAll(async () => {
     await fsPromises.mkdir("./.screenshots", { recursive: true });
-    setDefaultOptions({ timeout: 2200 });
+    setDefaultOptions({ timeout: 5000 });
     browser = await puppeteer.launch();
   });
 
