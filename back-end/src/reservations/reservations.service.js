@@ -19,12 +19,6 @@ function readReservationId(reservation_id) {
   return knex("reservations").select("*").where({ reservation_id }).first();
 }
 
-// function updateReservationStatus(reservation_id, status) {
-//   return knex("reservations")
-//     .where({ reservation_id })
-//     .update({ status: status }, "*");
-// }
-
 function searchByPhoneNumber(mobile_number) {
   return knex("reservations")
     .whereRaw(
@@ -33,14 +27,6 @@ function searchByPhoneNumber(mobile_number) {
     )
     .orderBy("reservation_date");
 }
-
-// function updateReservationById(updatedReservation) {
-//   return knex("reservations")
-//     .where({ reservation_id: updatedReservation.reservation_id })
-//     .whereNot({ status: "finished" })
-//     .update(updatedReservation, "*")
-//     .then((updatedRecord) => updatedRecord[0]);
-// }
 
 async function updateReservation(updatedReservation) {
   return knex("reservations")
@@ -62,9 +48,7 @@ module.exports = {
   listDate,
   create,
   readReservationId,
-  // updateReservationStatus,
   searchByPhoneNumber,
-  // updateReservationById,
   updateReservation,
   update,
 };
