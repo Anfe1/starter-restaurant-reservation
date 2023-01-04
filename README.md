@@ -1,4 +1,4 @@
-##Restaurant Reservation System Deployment
+## Restaurant Reservation System Deployment
 The application can be found at
 https://restaurant-frontend-ylvx.onrender.com/dashboard
 
