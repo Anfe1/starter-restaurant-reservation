@@ -62,6 +62,14 @@ function destroyTable(table_id, reservation_id) {
   });
 }
 
+function finish(updatedTable) {
+  return knex("tables")
+    .select("*")
+    .where({ table_id: updatedTable.table_id })
+    .update(updatedTable, "*")
+    .then((updatedTables) => updatedTables[0]);
+}
+
 module.exports = {
   list,
   create,
@@ -70,4 +78,5 @@ module.exports = {
   readTableId,
   destroyTable,
   readTableByRes,
+  finish,
 };
