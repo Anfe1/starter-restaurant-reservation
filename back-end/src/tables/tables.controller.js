@@ -108,8 +108,7 @@ async function validateSufficientCapacity(req, res, next) {
 //If there is a reservation_id already the table is already occupied.
 function validateTableIsOpen(req, res, next) {
   const { table } = res.locals;
-  if (table.status === "occupied") {
-    console.log("occupied", table.status);
+  if (table.reservation_id) {
     return next({ status: 400, message: "Table is occupied" });
   }
   next();
@@ -171,12 +170,29 @@ async function update(req, res) {
 }
 
 async function deleteTable(req, res, next) {
-  const { table } = res.locals;
+  // const { table_id } = req.params;
+  // const { table } = res.locals;
+  // const updatedTableData = {
+  //   ...table,
+  //   status: "free",
+  // };
+  // const updatedTable = await service.finish(updatedTableData);
+  // const updatedReservation = {
+  //   status: "finished",
+  //   reservation_id: table.reservation_id,
+  // };
+  // await reservationService.update(updatedReservation);
+  // res.json({ data: updatedTable });
 
-  const data = await service.destroyTable(table.table_id, table.reservation_id);
-  // const data = await service.list();
-  console.log(data);
-  res.json({ data });
+  // const data = await service.destroyTable(table.table_id, table.reservation_id);
+  // res.json({ data });
+  const { table } = res.locals;
+  const { table_id } = req.params;
+  const { reservation_id } = res.locals.table;
+  console.log("before", table);
+  const data = await service.destroyTable(table_id, reservation_id);
+  console.log("after", data);
+  res.status(200).json({ data });
 }
 
 module.exports = {
