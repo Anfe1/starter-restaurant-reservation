@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 import { cancelReservation } from "../../utils/api";
 
@@ -43,18 +43,18 @@ function ReservationsList({ reservationParam }) {
         <td data-reservation-id-status={reservation_id}>{status}</td>
         <td>
           {status === "booked" ? (
-            <a href={`/reservations/${reservation_id}/seat`}>
+            <Link to={`/reservations/${reservation_id}/seat`}>
               <button className="btn btn-primary"> Seat </button>
-            </a>
+            </Link>
           ) : (
             <div></div>
           )}
         </td>
         <td>
           {status === "booked" ? (
-            <a href={`/reservations/${reservation_id}/edit`}>
+            <Link to={`/reservations/${reservation_id}/edit`}>
               <button className="btn btn-primary "> Edit </button>
-            </a>
+            </Link>
           ) : (
             <></>
           )}
