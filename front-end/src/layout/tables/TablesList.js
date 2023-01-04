@@ -1,5 +1,4 @@
 import React from "react";
-
 import { finishTable } from "../../utils/api";
 
 function ListTables({ table, loadDashboard }) {
@@ -10,7 +9,7 @@ function ListTables({ table, loadDashboard }) {
       "Is this table ready to seat new guests? This cannot be undone."
     );
     if (confirmBox === true) {
-      finishTable(table_id)
+      await finishTable(table_id)
         .then(loadDashboard)
         .catch((error) => console.log(error));
     }
@@ -23,7 +22,6 @@ function ListTables({ table, loadDashboard }) {
         <th scope="row"> {table_id}</th>
         <td> {table_name} </td>
         <td> {capacity}</td>
-        <td> {reservation_id}</td>
         <td data-table-id-status={`${table_id}`}>
           {reservation_id ? "occupied" : "free"}
         </td>
